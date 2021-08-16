@@ -147,73 +147,78 @@ void set_speed_serial() {
         uint8_t size = Serial.readBytes(&buffer[0], MAX);
         int16_t cmd = set_param.read_command(buffer, size); 
         if(cmd < ERROR) {
-            switch(cmd){
+            switch(cmd) {
                 case 0: 
                 break;
                 case 1:
                     val1 = set_param.check_error_t(&buffer[3], 0);
                     val2 = set_param.check_error_t(&buffer[9], 1);
-                    if (val1 < ERROR){
-                    //engine_left.set_target_speed(val1);
-                    engine_left.set_power(val1*10);
+                    if (val1 < ERROR) {
+                        //engine_left.set_target_speed(val1);
+                        engine_left.set_power(val1*10);
                     }
-                    else{
+                    else {
+                                                                                    Serial.print("!1!");
                         Serial.println("val1");
                     }
-                    if (val2 < ERROR){
+                    if (val2 < ERROR) {
                         //engine_right.set_target_speed(val2);
                         engine_right.set_power(val2*10);
                     }
-                    else{
+                    else {
+                                                                                    Serial.print("!2!");
                         Serial.println("val2");
                     }
                     break;
                 case 2:
                     val1 = set_param.check_error_c(&buffer[3], 0, buffer[2]);
                     val2 = set_param.check_error_c(&buffer[9], 1, buffer[2]); //проверка на L/R (в самой функции)
-                    if (val1 < ERROR){
+                    if (val1 < ERROR) {
                     if (buffer[2] == 'L' || buffer[2] == 'l') {
-                        if (val1 < ERROR && val2 < ERROR){
+                        if (val1 < ERROR && val2 < ERROR) {
                             engine_left.set_coefficient(val1, 0, val2);
                         }
-                        else if (val1 < ERROR && val2 >= ERROR){
-                        engine_left.set_coefficient(val1, 0, 10000);
+                        else if (val1 < ERROR && val2 >= ERROR) {
+                            engine_left.set_coefficient(val1, 0, 10000);
                         }
-                        else if (val2 < ERROR && val1 >= ERROR){
-                        engine_left.set_coefficient(10000, 0, val2);
+                        else if (val2 < ERROR && val1 >= ERROR) {
+                            engine_left.set_coefficient(10000, 0, val2);
                         }
-                        else{
+                        else {
+                                                                                    Serial.print("!3!");
                             Serial.println(val1);
                             Serial.println(val2);
                         }
                     }
                     else {
-                        if (val1 < ERROR && val2 < ERROR){
+                        if (val1 < ERROR && val2 < ERROR) {
                             engine_right.set_coefficient(val1, 0, val2);
                         }
-                        else if (val1 < ERROR && val2 >= ERROR){
+                        else if (val1 < ERROR && val2 >= ERROR) {
                             engine_right.set_coefficient(val1, 0, 10000);
                         }
-                        else if (val2 < ERROR && val1 >= ERROR){
+                        else if (val2 < ERROR && val1 >= ERROR) {
                             engine_right.set_coefficient(10000, 0, val2);
                         }
-                        else{
+                        else {
+                                                                                    Serial.print("!4!");
                             Serial.println(val1);
                             Serial.println(val2);
                         }
                     }
                     }
                     else { 
+                                                                                    Serial.print("!5!");
                         Serial.println(val1); 
                     }
                     break;
                 case 3:
                     val1 = set_param.check_error_f(&buffer[3]);
-                    if (val1 < ERROR)
-                    {
+                    if (val1 < ERROR) {
                         // freq_send = val1; (-) -----
                     }
                     else {
+                                                                                    Serial.print("!6!");
                         Serial.println(val1);
                     }
                     break;
@@ -228,12 +233,13 @@ void set_speed_serial() {
                     }
                     break;
             default: 
+                                                                                    Serial.print("!7!");
                 Serial.println("Unknown error");
                 break;
             }
         }
-        
-        else{
+        else {
+                                                                                    Serial.print("!8!");
            Serial.println(cmd);
         }
         val1=0; val2=0;
