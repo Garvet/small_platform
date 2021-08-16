@@ -10,6 +10,7 @@ unsigned long timing;
 void set_speed_serial();
 void work_with_CAN();
 void send_message();
+void read_light();
 
 // --- Моторы ---
 // Пины для драйверов (M1, M2)
@@ -65,6 +66,11 @@ const int rx_queue_size = 10;     // Размер буфера приёма
 constexpr gpio_num_t CAN_TX_PIN = GPIO_NUM_22;
 constexpr gpio_num_t CAN_RX_PIN = GPIO_NUM_21;
 
+// --- UART2 шина ---
+constexpr uint8_t  UART_TX_PIN = GPIO_NUM_16;
+constexpr uint8_t  UART_RX_PIN = GPIO_NUM_17;
+constexpr uint16_t UART_BAUD   = 38400;
+
 // --- УФ диод ---
 constexpr uint8_t UV_LIGHT = GPIO_NUM_23;
 
@@ -90,9 +96,9 @@ void stop() {
 
 
 void setup() {
-    // Запуск UART'а
+    // Запуск UART'ов
     Serial.begin(115200);
-    
+    Serial2.begin(UART_BAUD, SERIAL_8N1, UART_RX_PIN, UART_TX_PIN);
     delay(100);
 
     // Инициализация УФ-диода
@@ -124,6 +130,7 @@ void setup() {
 
 void loop() {
     set_speed_serial();
+    read_light();
 }
 
 
@@ -133,6 +140,7 @@ void loop() {
 #define MAX 16
 
 uint8_t buffer[MAX];
+uint8_t buffer2[MAX];
 int16_t val1 = 0, val2 = 0;
 
 void set_speed_serial() {
@@ -243,6 +251,31 @@ void set_speed_serial() {
            Serial.println(cmd);
         }
         val1=0; val2=0;
+    }
+}
+
+void read_light() {
+    uint8_t num = 0;
+    if(Serial2.available() != 0) {
+        for(int i = 0; i < MAX; ++i){
+            buffer2[i] = 0;
+        }
+        delay(5);
+        Serial2.readBytes(&buffer2[num], 1);
+        if(buffer2[num++] != 'S')
+            return;
+        Serial2.readBytes(&buffer2[num], 6);
+        if(buffer2[num++] != 'L')
+            return;
+        for(int i = 0; i < 4; ++i) {
+            if(buffer2[num] < '0' || buffer2[num] > '9')
+                return;
+            ++num;
+        }
+        if(buffer2[num++] != 'E')
+            return;
+        Serial.write(buffer2, num);
+        Serial.println();
     }
 }
 
