@@ -75,6 +75,13 @@ void Get_data::print(int32_t data, uint32_t ID){
         tmp[0] = 'S';
         tmp[1] = 'I';
     }
+    else if (ID == ID_RFID){
+        size = 5 + SERIAL_RFID;
+        tmp = new char[size];
+        format_byte(data, RFID_MAX, size - 1) ;
+        tmp[0] = 'S';
+        tmp[1] = 'F';
+    }
     else if (ID > ID_IR) {
         size = US_MAX*3 + SERIAL_US;
         tmp = new char[size];

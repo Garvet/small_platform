@@ -31,13 +31,14 @@ bool Engine::begin() {
     pinMode(pin_forward, OUTPUT);
     pinMode(pin_backward, OUTPUT);
     pinMode(pin_PWM, OUTPUT);
-    // pinMode(pin_encoder, INPUT_PULLUP);
-    pinMode(pin_encoder, INPUT);
     // Настройка аппаратного ШИМ 0-255 0-4095
     ledcSetup(num_PWM_channel, 20000, 12);
     ledcAttachPin(pin_PWM, num_PWM_channel);
-    // Настройка прерывания
-    attachInterrupt(pin_encoder, encoder_fun, RISING);
+    // Настройка прерывания (если есть)
+    if(pin_encoder != 0 && encoder_fun != nullptr) {
+        pinMode(pin_encoder, INPUT);
+        attachInterrupt(pin_encoder, encoder_fun, RISING);
+    }
     return false;
 }
 

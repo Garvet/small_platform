@@ -26,10 +26,10 @@ public:
     ~Engine()=default;
 
     bool init(uint8_t pin_forward, uint8_t pin_backward, uint8_t pin_PWM, uint8_t pin_encoder,
-               uint8_t num_PWM_channel, std::function<void(void)> interrupt_fun, uint16_t max_power=4095);
+               uint8_t num_PWM_channel, std::function<void(void)> interrupt_fun=nullptr, uint16_t max_power=4095);
     bool begin();
     bool begin(uint8_t pin_forward, uint8_t pin_backward, uint8_t pin_PWM, uint8_t pin_encoder,
-               uint8_t num_PWM_channel, std::function<void(void)> interrupt_fun, uint16_t max_power=4095);
+               uint8_t num_PWM_channel, std::function<void(void)> interrupt_fun=nullptr, uint16_t max_power=4095);
     // Прерывания датчика Холла
     void interrupt();
     uint32_t get_counter(bool clear=true);
